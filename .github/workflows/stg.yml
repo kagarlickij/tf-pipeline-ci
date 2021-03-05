@@ -1,0 +1,41 @@
+name: stg
+
+on:
+  push:
+    branches:
+    - main
+
+jobs:
+  plan:
+    runs-on: ubuntu-latest
+    container:
+      image: kagarlickij/tf-runtime:latest
+    steps:
+      - uses: actions/checkout@v2
+      - run: |
+          cd ./stg
+          terraform init
+          terraform plan
+        name: terraform plan for STG env
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID}}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: 'us-east-1'
+
+  apply:
+    needs: plan
+    environment: stg
+    runs-on: ubuntu-latest
+    container:
+      image: kagarlickij/tf-runtime:latest
+    steps:
+      - uses: actions/checkout@v2
+      - run: |
+          cd ./stg
+          terraform init
+          terraform apply -auto-approve
+        name: terraform apply for STG env
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID}}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: 'us-east-1'

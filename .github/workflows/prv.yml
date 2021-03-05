@@ -1,0 +1,24 @@
+name: prv
+
+on:
+  pull_request:
+    branches:
+    - main
+
+jobs:
+  prv:
+    runs-on: ubuntu-latest
+    container:
+      image: kagarlickij/tf-runtime:latest
+    steps:
+      - uses: actions/checkout@v2
+      - run: |
+          cd ./modules/demo
+          terraform init
+          terraform validate *
+          terraform fmt -check
+        name: terraform check
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID}}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: 'us-east-1'
