@@ -17,5 +17,5 @@ terraform {
 module "demo" {
   source = "../modules/demo"
   bucket_name = "kag-app-dev" # REPLACE IT FOR OTHER ENV
-  versioning_status = "false"
+  versioning_status = "true"
 }
